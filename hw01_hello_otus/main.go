@@ -1,5 +1,13 @@
 package main
 
+import (
+	"fmt"
+
+	"golang.org/x/example/stringutil"
+)
+
 func main() {
-	// Place your code here.
+	greeting := "Hello, OTUS!"
+	reverseGreeting := stringutil.Reverse(greeting)
+	fmt.Println(reverseGreeting)
 }
