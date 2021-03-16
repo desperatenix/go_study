@@ -21,14 +21,15 @@ func Unpack(s string) (string, error) {
 		return "", nil
 	}
 	for _, cur := range s {
-		if unicode.IsDigit(cur) && string(cur) != "0" { //nolint:gocritic
+		switch {
+		case unicode.IsDigit(cur) && string(cur) != "0":
 			integer, _ := strconv.Atoi(string(cur))
 			b.WriteString(strings.Repeat(string(prev), integer-1))
-		} else if string(cur) == "0" {
+		case string(cur) == "0":
 			crop := b.String()[:b.Len()-1]
 			b.Reset()
 			b.WriteString(crop)
-		} else {
+		default:
 			b.WriteString(string(cur))
 		}
 		prev = cur
