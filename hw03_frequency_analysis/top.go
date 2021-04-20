@@ -19,16 +19,18 @@ func Top10(text string) []string {
 	}
 
 	words := regexp.MustCompile(`\S+`)
-	m := countWords(words.FindAllString(text, -1))
+	uniqWord := countWords(words.FindAllString(text, -1))
 
 	type kv struct {
 		Word  string
 		Count int
 	}
 
-	wc := make([]kv, len(m))
-	for k, v := range m {
-		wc = append(wc, kv{k, v})
+	wc := make([]kv, len(uniqWord))
+	i := 0
+	for k, v := range uniqWord {
+		wc[i] = kv{k, v}
+		i++
 	}
 
 	sort.Slice(wc, func(i, j int) bool {
@@ -41,8 +43,8 @@ func Top10(text string) []string {
 	if len(wc) > 10 {
 		wc = wc[:10]
 	}
-	top10word := make([]string, len(wc))
 
+	top10word := make([]string, len(wc))
 	for i, kv := range wc {
 		top10word[i] = kv.Word
 	}
