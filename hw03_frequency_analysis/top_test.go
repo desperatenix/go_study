@@ -48,7 +48,7 @@ func TestTop10(t *testing.T) {
 		require.Len(t, Top10(""), 0)
 	})
 
-	multi := `cat and dog, one dog,two cats and one man`
+	lessThan10 := `cat and dog, one dog,two cats and one man`
 	t.Run("less than 10 uniq words", func(t *testing.T) {
 		expected := []string{
 			"and",
@@ -59,7 +59,17 @@ func TestTop10(t *testing.T) {
 			"dog,two",
 			"man",
 		}
-		require.Equal(t, expected, Top10(multi))
+		require.Equal(t, expected, Top10(lessThan10))
+	})
+
+	multiB := `å å ß ®`
+	t.Run("less than 10 uniq words", func(t *testing.T) {
+		expected := []string{
+			"å",
+			"®",
+			"ß",
+		}
+		require.Equal(t, expected, Top10(multiB))
 	})
 
 	t.Run("positive test", func(t *testing.T) {
