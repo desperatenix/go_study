@@ -26,30 +26,25 @@ func Top10(text string) []string {
 		Count int
 	}
 
-	var wc []kv //nolint
+	wc := make([]kv, len(m))
 	for k, v := range m {
 		wc = append(wc, kv{k, v})
 	}
 
 	sort.Slice(wc, func(i, j int) bool {
-		return wc[i].Word < wc[j].Word
-	})
-
-	sort.SliceStable(wc, func(i, j int) bool {
+		if wc[i].Count == wc[j].Count {
+			return wc[i].Word < wc[j].Word
+		}
 		return wc[i].Count > wc[j].Count
 	})
 
-	var top10word []string //nolint
-	var wordsSlice []kv
-
-	if len(wc) < 10 {
-		wordsSlice = wc
-	} else {
-		wordsSlice = wc[:10]
+	if len(wc) > 10 {
+		wc = wc[:10]
 	}
+	top10word := make([]string, len(wc))
 
-	for _, kv := range wordsSlice {
-		top10word = append(top10word, kv.Word)
+	for i, kv := range wc {
+		top10word[i] = kv.Word
 	}
 
 	return top10word
