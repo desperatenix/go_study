@@ -13,7 +13,6 @@ type Cache interface {
 }
 
 type lruCache struct {
-	Cache    // Remove me after realization.
 	mx       sync.Mutex
 	capacity int
 	queue    List

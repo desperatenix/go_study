@@ -50,7 +50,6 @@ func TestCache(t *testing.T) {
 	})
 
 	t.Run("purge logic", func(t *testing.T) {
-		// Write me
 		c := NewCache(2)
 		c.Set("orange_color", "#ff800")
 		c.Set("dot", '.')
@@ -70,7 +69,6 @@ func TestCache(t *testing.T) {
 }
 
 func TestCacheMultithreading(t *testing.T) {
-
 	c := NewCache(10)
 	wg := &sync.WaitGroup{}
 	wg.Add(2)
