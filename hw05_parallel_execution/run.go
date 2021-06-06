@@ -1,4 +1,4 @@
-package hw05parallelexecution
+package hw05parallelexecution //nolint:ifshort
 
 import (
 	"errors"
