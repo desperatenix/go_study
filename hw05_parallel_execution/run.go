@@ -1,4 +1,4 @@
-package hw05parallelexecution //nolint:golint,stylecheck
+package hw05parallelexecution //nolint:ifshort
 
 import (
 	"errors"
@@ -46,6 +46,7 @@ func worker(taskCh <-chan Task, mx sync.Locker, errLimit *int) {
 		if *errLimit < 1 {
 			stop = true
 		}
+
 		if err != nil {
 			*errLimit--
 		}
