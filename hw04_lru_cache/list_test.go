@@ -48,4 +48,14 @@ func TestList(t *testing.T) {
 		}
 		require.Equal(t, []int{70, 80, 60, 40, 10, 30, 50}, elems)
 	})
+
+	t.Run("multi front push and move", func(t *testing.T) {
+		l := NewList()
+		p := l.PushFront(68)
+		l.PushFront(57)
+		l.PushFront(46)
+		l.MoveToFront(p)
+		require.Equal(t, 68, l.Front().Value)
+		require.Equal(t, 57, l.Back().Value)
+	})
 }
