@@ -13,6 +13,13 @@ const (
 	fault         = sleepPerStage / 2
 )
 
+func gotoCh(ch Bi, data []int) {
+	for _, v := range data {
+		ch <- v
+	}
+	close(ch)
+}
+
 func TestPipeline(t *testing.T) {
 	// Stage generator
 	g := func(_ string, f func(v interface{}) interface{}) Stage {
@@ -89,5 +96,47 @@ func TestPipeline(t *testing.T) {
 
 		require.Len(t, result, 0)
 		require.Less(t, int64(elapsed), int64(abortDur)+int64(fault))
+	})
+
+	t.Run("closed done channel", func(t *testing.T) {
+		in := make(Bi)
+		data := []int{0, 9, 8, 7, 6}
+		done := make(Bi)
+		close(done)
+
+		go gotoCh(in, data)
+
+		result := make([]string, 0)
+		for s := range ExecutePipeline(in, done, stages...) {
+			result = append(result, s.(string))
+		}
+
+		require.Len(t, result, 0)
+	})
+
+	t.Run("empty input data to  channel", func(t *testing.T) {
+		in := make(Bi)
+		close(in)
+
+		result := make([]string, 0)
+		for s := range ExecutePipeline(in, nil, stages...) {
+			result = append(result, s.(string))
+		}
+
+		require.Len(t, result, 0)
+	})
+
+	t.Run("no stages", func(t *testing.T) {
+		in := make(Bi)
+		data := []int{11, 12, 13, 14, 15}
+
+		go gotoCh(in, data)
+
+		result := make([]int, 0, 10)
+		for s := range ExecutePipeline(in, nil, []Stage{}...) {
+			result = append(result, s.(int))
+		}
+
+		require.Equal(t, []int{11, 12, 13, 14, 15}, result)
 	})
 }
