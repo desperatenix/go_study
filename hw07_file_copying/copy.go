@@ -28,6 +28,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	if err != nil {
 		return err
 	}
+
 	dst, err := os.OpenFile(toPath, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0755)
 	if err != nil {
 		return err
@@ -50,11 +51,11 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 
 	if limit == 0 {
 		_, err = io.Copy(dst, barReader)
+		if err != nil {
+			return err
+		}
 	} else {
 		_, err = io.CopyN(dst, barReader, limit)
-	}
-	if err != nil && err != io.EOF {
-		return err
 	}
 
 	return nil
