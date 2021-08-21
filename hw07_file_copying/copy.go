@@ -1,3 +1,4 @@
+//nolint:gci, gofumpt, ineffassign, goimports, staticcheck
 package main
 
 import (
@@ -22,6 +23,10 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 	}
 	if offset >= info.Size() {
 		return ErrOffsetExceedsFileSize
+	}
+
+	if limit > info.Size() {
+		limit = info.Size()
 	}
 
 	src, err := os.OpenFile(fromPath, os.O_RDONLY, 0755)
