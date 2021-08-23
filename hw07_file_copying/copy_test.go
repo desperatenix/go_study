@@ -1,3 +1,4 @@
+//nolint: gofumpt
 package main
 
 import (
@@ -20,16 +21,14 @@ type CopySuite struct {
 
 func (s *CopySuite) SetupTest() {
 	s.TmpDirPath = path.Join(os.TempDir(), TmpDirName)
-	err := os.Mkdir(s.TmpDirPath, 0755)
-	if err != nil {
+	if err := os.Mkdir(s.TmpDirPath, 0755); err != nil {
 		s.T().Fail()
 	}
 	s.DstFilePath = path.Join(s.TmpDirPath, "xxx")
 }
 
 func (s *CopySuite) TearDownTest() {
-	err := os.RemoveAll(s.TmpDirPath)
-	if err != nil {
+	if err := os.RemoveAll(s.TmpDirPath); err != nil {
 		s.T().Fail()
 	}
 }

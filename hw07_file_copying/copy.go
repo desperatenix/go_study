@@ -1,11 +1,12 @@
-//nolint:gci, gofumpt, ineffassign, goimports, staticcheck
+//nolint: gofumpt
 package main
 
 import (
 	"errors"
-	"github.com/cheggaaa/pb/v3"
 	"io"
 	"os"
+
+	"github.com/cheggaaa/pb/v3"
 )
 
 var (
@@ -25,7 +26,7 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 		return ErrOffsetExceedsFileSize
 	}
 
-	if limit > info.Size() {
+	if limit > info.Size() || limit == 0 {
 		limit = info.Size()
 	}
 
@@ -54,13 +55,18 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 		return err
 	}
 
-	if limit == 0 {
-		_, err = io.Copy(dst, barReader)
-		if err != nil {
-			return err
-		}
-	} else {
-		_, err = io.CopyN(dst, barReader, limit)
+	_, err = io.CopyN(dst, barReader, limit)
+
+	if err != nil && !errors.Is(err, io.EOF) {
+		return err
+	}
+
+	if err := src.Close(); err != nil {
+		return err
+	}
+
+	if err := dst.Close(); err != nil {
+		return err
 	}
 
 	return nil
