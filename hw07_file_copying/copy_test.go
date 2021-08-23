@@ -1,4 +1,4 @@
-//nolint: gofumpt
+//nolint:gofumpt
 package main
 
 import (
@@ -13,35 +13,39 @@ const (
 	TmpDirName string = "tmp"
 )
 
+var (
+	ErrNoSuchFileOrDirectory = "stat ./there_is_no_file: no such file or directory"
+)
+
 type CopySuite struct {
 	suite.Suite
-	TmpDirPath  string
-	DstFilePath string
+	tmpDirPath  string
+	dstFilePath string
 }
 
 func (s *CopySuite) SetupTest() {
-	s.TmpDirPath = path.Join(os.TempDir(), TmpDirName)
-	if err := os.Mkdir(s.TmpDirPath, 0755); err != nil {
+	s.tmpDirPath = path.Join(os.TempDir(), TmpDirName)
+	if err := os.Mkdir(s.tmpDirPath, 0755); err != nil {
 		s.T().Fail()
 	}
-	s.DstFilePath = path.Join(s.TmpDirPath, "xxx")
+	s.dstFilePath = path.Join(s.tmpDirPath, "xxx")
 }
 
 func (s *CopySuite) TearDownTest() {
-	if err := os.RemoveAll(s.TmpDirPath); err != nil {
+	if err := os.RemoveAll(s.tmpDirPath); err != nil {
 		s.T().Fail()
 	}
 }
 
 func (s *CopySuite) TestCopy() {
-	err := Copy("./testdata/input.txt", s.DstFilePath, 0, 0)
+	err := Copy("./testdata/input.txt", s.dstFilePath, 0, 0)
 	s.Require().NoError(err)
 
 	info, err := os.Stat("./testdata/input.txt")
 	if err != nil {
 		s.T().Fail()
 	}
-	resultInfo, err := os.Stat(s.DstFilePath)
+	resultInfo, err := os.Stat(s.dstFilePath)
 	if err != nil {
 		s.T().Fail()
 	}
@@ -49,10 +53,10 @@ func (s *CopySuite) TestCopy() {
 }
 
 func (s *CopySuite) TestCopyWithLimit() {
-	err := Copy("./testdata/input.txt", s.DstFilePath, 0, 10)
+	err := Copy("./testdata/input.txt", s.dstFilePath, 0, 10)
 	s.Require().NoError(err)
 
-	resultInfo, err := os.Stat(s.DstFilePath)
+	resultInfo, err := os.Stat(s.dstFilePath)
 	if err != nil {
 		s.T().Fail()
 	}
@@ -60,10 +64,10 @@ func (s *CopySuite) TestCopyWithLimit() {
 }
 
 func (s *CopySuite) TestCopyWithLimitOffset() {
-	err := Copy("./testdata/input.txt", s.DstFilePath, 6000, 1000)
+	err := Copy("./testdata/input.txt", s.dstFilePath, 6000, 1000)
 	s.Require().NoError(err)
 
-	resultInfo, err := os.Stat(s.DstFilePath)
+	resultInfo, err := os.Stat(s.dstFilePath)
 	if err != nil {
 		s.T().Fail()
 	}
@@ -71,19 +75,19 @@ func (s *CopySuite) TestCopyWithLimitOffset() {
 }
 
 func (s *CopySuite) TestNoFile() {
-	err := Copy("./there_is_no_file", s.DstFilePath, 0, 0)
+	err := Copy("./there_is_no_file", s.dstFilePath, 0, 0)
 	s.Require().Error(err)
-	s.Require().EqualError(err, "stat ./there_is_no_file: no such file or directory")
+	s.Require().EqualError(err, ErrNoSuchFileOrDirectory)
 }
 
 func (s *CopySuite) TestSpecialFile() {
-	err := Copy("/dev/null", s.DstFilePath, 0, 0)
+	err := Copy("/dev/null", s.dstFilePath, 0, 0)
 	s.Require().Error(err)
 	s.Require().Equal(err, ErrUnsupportedFile)
 }
 
 func (s *CopySuite) TestOffsetExceeds() {
-	err := Copy("./testdata/input.txt", s.DstFilePath, 10000, 0)
+	err := Copy("./testdata/input.txt", s.dstFilePath, 10000, 0)
 	s.Require().Error(err)
 	s.Require().Equal(err, ErrOffsetExceedsFileSize)
 }

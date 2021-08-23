@@ -1,4 +1,4 @@
-//nolint: gofumpt
+//nolint:gofumpt
 package main
 
 import (
