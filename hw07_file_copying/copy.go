@@ -1,4 +1,3 @@
-//nolint:gofumpt
 package main
 
 import (
@@ -30,12 +29,12 @@ func Copy(fromPath, toPath string, offset, limit int64) error {
 		limit = info.Size()
 	}
 
-	src, err := os.OpenFile(fromPath, os.O_RDONLY, 0755)
+	src, err := os.OpenFile(fromPath, os.O_RDONLY, 0o755)
 	if err != nil {
 		return err
 	}
 
-	dst, err := os.OpenFile(toPath, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0755)
+	dst, err := os.OpenFile(toPath, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0o755)
 	if err != nil {
 		return err
 	}

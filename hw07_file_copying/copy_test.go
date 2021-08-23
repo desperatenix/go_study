@@ -1,4 +1,3 @@
-//nolint:gofumpt
 package main
 
 import (
@@ -13,9 +12,7 @@ const (
 	TmpDirName string = "tmp"
 )
 
-var (
-	ErrNoSuchFileOrDirectory = "stat ./there_is_no_file: no such file or directory"
-)
+var ErrNoSuchFileOrDirectory = "stat ./there_is_no_file: no such file or directory"
 
 type CopySuite struct {
 	suite.Suite
@@ -25,7 +22,7 @@ type CopySuite struct {
 
 func (s *CopySuite) SetupTest() {
 	s.tmpDirPath = path.Join(os.TempDir(), TmpDirName)
-	if err := os.Mkdir(s.tmpDirPath, 0755); err != nil {
+	if err := os.Mkdir(s.tmpDirPath, 0o755); err != nil {
 		s.T().Fail()
 	}
 	s.dstFilePath = path.Join(s.tmpDirPath, "xxx")
