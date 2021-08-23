@@ -22,16 +22,14 @@ type CopySuite struct {
 
 func (s *CopySuite) SetupTest() {
 	s.tmpDirPath = path.Join(os.TempDir(), TmpDirName)
-	if err := os.Mkdir(s.tmpDirPath, 0o755); err != nil {
-		s.T().Fail()
-	}
+	err := os.Mkdir(s.tmpDirPath, 0o755)
+	s.Require().NoError(err)
 	s.dstFilePath = path.Join(s.tmpDirPath, "xxx")
 }
 
 func (s *CopySuite) TearDownTest() {
-	if err := os.RemoveAll(s.tmpDirPath); err != nil {
-		s.T().Fail()
-	}
+	err := os.RemoveAll(s.tmpDirPath)
+	s.Require().NoError(err)
 }
 
 func (s *CopySuite) TestCopy() {
@@ -39,13 +37,9 @@ func (s *CopySuite) TestCopy() {
 	s.Require().NoError(err)
 
 	info, err := os.Stat("./testdata/input.txt")
-	if err != nil {
-		s.T().Fail()
-	}
+	s.Require().NoError(err)
 	resultInfo, err := os.Stat(s.dstFilePath)
-	if err != nil {
-		s.T().Fail()
-	}
+	s.Require().NoError(err)
 	s.Require().Equal(info.Size(), resultInfo.Size())
 }
 
@@ -54,9 +48,7 @@ func (s *CopySuite) TestCopyWithLimit() {
 	s.Require().NoError(err)
 
 	resultInfo, err := os.Stat(s.dstFilePath)
-	if err != nil {
-		s.T().Fail()
-	}
+	s.Require().NoError(err)
 	s.Require().Equal(int64(10), resultInfo.Size())
 }
 
@@ -65,9 +57,7 @@ func (s *CopySuite) TestCopyWithLimitOffset() {
 	s.Require().NoError(err)
 
 	resultInfo, err := os.Stat(s.dstFilePath)
-	if err != nil {
-		s.T().Fail()
-	}
+	s.Require().NoError(err)
 	s.Require().Equal(int64(617), resultInfo.Size())
 }
 
